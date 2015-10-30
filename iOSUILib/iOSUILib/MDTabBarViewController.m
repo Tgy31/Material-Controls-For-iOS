@@ -86,8 +86,8 @@
   NSDictionary *metricsDictionary = @{ @"tabHeight" : @kMDTabBarHeight };
 
   [self.view addConstraints:[NSLayoutConstraint
-                                constraintsWithVisualFormat:@"V:|-0-[_tabBar(=="
-                                @"tabHeight)]-0-[pageControllerView]-0-|"
+                             constraintsWithVisualFormat:@"V:|-0-[pageControllerView]-0-[_tabBar(=="
+                             @"tabHeight)]-0-|"
                                                     options:0
                                                     metrics:metricsDictionary
                                                       views:viewsDictionary]];
