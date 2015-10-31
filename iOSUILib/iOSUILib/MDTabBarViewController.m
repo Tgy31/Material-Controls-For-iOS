@@ -147,6 +147,43 @@
   [_tabBar setItems:items];
 }
 
+- (void)setSelectedIndex:(NSUInteger)selectedIndex {
+    UIViewController *viewController =
+    [viewControllers objectForKey:[NSNumber numberWithInteger:selectedIndex]];
+    
+    if (!viewController) {
+        viewController = [self.delegate tabBarViewController:self
+                                       viewControllerAtIndex:selectedIndex];
+        [viewControllers setObject:viewController
+                            forKey:[NSNumber numberWithInteger:selectedIndex]];
+    }
+    
+    UIPageViewControllerNavigationDirection animateDirection =
+    selectedIndex > lastIndex
+    ? UIPageViewControllerNavigationDirectionForward
+    : UIPageViewControllerNavigationDirectionReverse;
+    
+    __unsafe_unretained typeof(self) weakSelf = self;
+    disableDragging = YES;
+    pageController.view.userInteractionEnabled = NO;
+    [pageController
+     setViewControllers:@[ viewController ]
+     direction:animateDirection
+     animated:NO
+     completion:^(BOOL finished) {
+         weakSelf->disableDragging = NO;
+         weakSelf->pageController.view.userInteractionEnabled = YES;
+         weakSelf->lastIndex = selectedIndex;
+         
+         if ([weakSelf->_delegate
+              respondsToSelector:@selector(tabBarViewController:
+                                           didMoveToIndex:)]) {
+                  [weakSelf->_delegate tabBarViewController:weakSelf
+                                             didMoveToIndex:selectedIndex];
+              }
+     }];
+}
+
 #pragma PageViewControllerDataSource
 - (UIViewController *)pageViewController:
                           (UIPageViewController *)pageViewController
@@ -220,40 +257,7 @@
 #pragma mark - MDTabBar Delegate
 - (void)tabBar:(MDTabBar *)tabBar
     didChangeSelectedIndex:(NSUInteger)selectedIndex {
-  UIViewController *viewController =
-      [viewControllers objectForKey:[NSNumber numberWithInteger:selectedIndex]];
-
-  if (!viewController) {
-    viewController = [self.delegate tabBarViewController:self
-                                   viewControllerAtIndex:selectedIndex];
-    [viewControllers setObject:viewController
-                        forKey:[NSNumber numberWithInteger:selectedIndex]];
-  }
-
-  UIPageViewControllerNavigationDirection animateDirection =
-      selectedIndex > lastIndex
-          ? UIPageViewControllerNavigationDirectionForward
-          : UIPageViewControllerNavigationDirectionReverse;
-
-  __unsafe_unretained typeof(self) weakSelf = self;
-  disableDragging = YES;
-  pageController.view.userInteractionEnabled = NO;
-  [pageController
-      setViewControllers:@[ viewController ]
-               direction:animateDirection
-                animated:NO
-              completion:^(BOOL finished) {
-                weakSelf->disableDragging = NO;
-                weakSelf->pageController.view.userInteractionEnabled = YES;
-                weakSelf->lastIndex = selectedIndex;
-
-                if ([weakSelf->_delegate
-                        respondsToSelector:@selector(tabBarViewController:
-                                                           didMoveToIndex:)]) {
-                  [weakSelf->_delegate tabBarViewController:weakSelf
-                                             didMoveToIndex:selectedIndex];
-                }
-              }];
+    [self setSelectedIndex:selectedIndex];
 }
 
 #pragma mark - ScrollView Delegate
