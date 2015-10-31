@@ -145,6 +145,12 @@
 }
 
 - (void)setSelectedIndex:(NSUInteger)selectedIndex {
+    self.tabBar.selectedIndex = selectedIndex;
+    [self performSetSelectedIndex:selectedIndex];
+}
+
+- (void)performSetSelectedIndex:(NSUInteger)selectedIndex {
+    
     UIViewController *viewController =
     [viewControllers objectForKey:[NSNumber numberWithInteger:selectedIndex]];
     
@@ -254,7 +260,7 @@
 #pragma mark - MDTabBar Delegate
 - (void)tabBar:(MDTabBar *)tabBar
     didChangeSelectedIndex:(NSUInteger)selectedIndex {
-    [self setSelectedIndex:selectedIndex];
+    [self performSetSelectedIndex:selectedIndex];
 }
 
 #pragma mark - ScrollView Delegate
