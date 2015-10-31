@@ -80,11 +80,8 @@
   UIView *pageControllerView = pageController.view;
   //  pageControllerView.backgroundColor = [UIColor blueColor];
 
-    NSDictionary *viewsDictionary = @{
-                                      @"parentView": parentView,
-                                      @"_tabBar": _tabBar,
-                                      @"pageControllerView": pageControllerView
-                                      };
+  NSDictionary *viewsDictionary =
+      NSDictionaryOfVariableBindings(parentView, _tabBar, pageControllerView);
 
   NSDictionary *metricsDictionary = @{ @"tabHeight" : @kMDTabBarHeight };
 
@@ -312,10 +309,7 @@
       CGRect frame =
           CGRectMake(newOriginX, kMDTabBarHeight - kMDIndicatorHeight, newWidth,
                      kMDIndicatorHeight);
-        
-        if (!isnan(newOriginX) && !isnan(newWidth)) {
-            [_tabBar moveIndicatorToFrame:frame withAnimated:NO];
-        }
+      [_tabBar moveIndicatorToFrame:frame withAnimated:NO];
     }
   }
 }
