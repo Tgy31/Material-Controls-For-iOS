@@ -43,6 +43,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (instancetype)initWithDelegate:(id<MDTabBarViewControllerDelegate>)delegate;
 - (void)setItems:(NSArray <id>*)items;
+- (void)setSelectedIndex:(NSUInteger)selectedIndex;
 
 @end
 NS_ASSUME_NONNULL_END
